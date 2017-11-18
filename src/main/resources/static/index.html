@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<script>
+  var host = "localhost";
+  var port = 8080;
+</script>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lol kek</title>
+</head>
+<body>
+<div id="header">
+    <form method="POST" id="citybutton" action="javascript:void(null);" onsubmit="gettemps()">
+        <input value="Moscow" style="font-size:large" type="submit">
+    </form>
+</div>
+<h1>KEK LOL</h1>
+<div id="body">
+    <div id="answer" class="chat form"></div>
+</div>
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script>
+function gettemps() {
+   var settings = {
+        "method": "POST",
+        "crossDomain": true,
+        "url": "http://" + host + ":" + port + "/weather/stat",
+        "data": "cityId=524901"
+    };
+
+   $.ajax(settings).done(function(response) {
+        $( "#answer" ).html(response.replace(/\n/g, "<br />"));
+   }).fail(function (jqXHR, textStatus) {
+       alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+       console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+   });
+}
+</script>
