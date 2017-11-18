@@ -55,6 +55,7 @@ dependencies {
 
 configurations {
     compile.exclude group:'ch.qos.logback'
+    compile.exclude module:'log4j-over-slf4j'
 }
 
 sourceSets {
