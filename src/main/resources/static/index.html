@@ -13,8 +13,8 @@
 </head>
 <body onload="initselect()">
     <div id="header">
-        <select id="cities"></select>
-        <button id="submit" onclick="gettemps()">Submit</button>
+        <select id="cities" style="font-size:large"></select>
+        <button id="submit" onclick="gettemps()" style="font-size:large">Submit</button>
     </div>
     <div id="body">
         <div id="answer" class="chat form"></div>
@@ -30,7 +30,13 @@ function initselect() {
         "url": url + "/weather/cities"
     };
     $.ajax(settings).done(function(response) {
-        
+        var ct = response.split(" ");
+        var x = document.getElementById("cities");
+        for (i = 0; i < ct.length; i++) {
+            var opt = document.createElement("option");
+            opt.text = ct[i];
+            x.add(opt);
+        }
     }).fail( function(jqXHR, textStatus) {
         alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
         console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
