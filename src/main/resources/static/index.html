@@ -1,41 +1,55 @@
 <!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 <script>
   var host = "localhost";
   var port = 8080;
+  var url = "http://" + host + ":" + port
 </script>
 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lol kek</title>
 </head>
-<body>
-<div id="header">
-    <form method="POST" id="citybutton" action="javascript:void(null);" onsubmit="gettemps()">
-        <input value="Moscow" style="font-size:large" type="submit">
-    </form>
-</div>
-<h1>KEK LOL</h1>
-<div id="body">
-    <div id="answer" class="chat form"></div>
-</div>
+<body onload="initselect()">
+    <div id="header">
+        <select id="cities"></select>
+        <button id="submit" onclick="gettemps()">Submit</button>
+    </div>
+    <div id="body">
+        <div id="answer" class="chat form"></div>
+    </div>
 </body>
 </html>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+function initselect() {
+    var settings = {
+        "method": "GET",
+        "crossDomain": true,
+        "url": url + "/weather/cities",
+    };
+    $.ajax(settings).done(function(response) {
+        
+    }).fail( function(jqHXR, textStatus) {
+        alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+        console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+    });
+}
+</script>
 
 <script>
 function gettemps() {
    var settings = {
         "method": "POST",
         "crossDomain": true,
-        "url": "http://" + host + ":" + port + "/weather/stat",
+        "url": url + "/weather/stat",
         "data": "cityId=524901"
     };
 
    $.ajax(settings).done(function(response) {
         $( "#answer" ).html(response.replace(/\n/g, "<br />"));
-   }).fail(function (jqXHR, textStatus) {
+   }).fail(function(jqXHR, textStatus) {
        alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
        console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
    });
