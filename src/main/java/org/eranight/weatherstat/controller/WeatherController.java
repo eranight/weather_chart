@@ -49,13 +49,13 @@ public class WeatherController {
         if (cityId == -1) {
             return ResponseEntity.badRequest().body(BAD_RESPONSE);
         }
-        List<String> temps = openWeatherMapService.getTemps(cityId, getAppid());
+        List<Integer> temps = openWeatherMapService.getTemps(cityId, getAppid());
         if (temps.isEmpty()) {
             logger.warn("the response list is empty, something wrong");
             return ResponseEntity.ok()
                     .body(HTMLTAGS.replace(MESSAGE, BAD_RESPONSE));
         } else {
-            String answer = temps.stream().collect(Collectors.joining("\n"));
+            String answer = temps.stream().map(String::valueOf).collect(Collectors.joining("\n"));
             return ResponseEntity.ok().body(HTMLTAGS.replace(MESSAGE, answer));
         }
     }
