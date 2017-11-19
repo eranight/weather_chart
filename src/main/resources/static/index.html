@@ -27,11 +27,11 @@ function initselect() {
     var settings = {
         "method": "GET",
         "crossDomain": true,
-        "url": url + "/weather/cities",
+        "url": url + "/weather/cities"
     };
     $.ajax(settings).done(function(response) {
-        
-    }).fail( function(jqHXR, textStatus) {
+
+    }).fail( function(jqXHR, textStatus) {
         alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
         console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
     });
