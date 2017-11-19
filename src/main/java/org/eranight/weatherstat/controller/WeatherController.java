@@ -1,5 +1,6 @@
 package org.eranight.weatherstat.controller;
 
+import javafx.util.Pair;
 import org.eranight.weatherstat.service.AvailableCitiesService;
 import org.eranight.weatherstat.service.OpenWeatherMapService;
 import org.slf4j.Logger;
@@ -19,7 +20,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Controller
@@ -49,14 +52,13 @@ public class WeatherController {
         if (cityId == -1) {
             return ResponseEntity.badRequest().body(BAD_RESPONSE);
         }
-        List<Integer> temps = openWeatherMapService.getTemps(cityId, getAppid());
+        List<Pair<Date, Integer>> temps = openWeatherMapService.getTemps(cityId, getAppid());
         if (temps.isEmpty()) {
             logger.warn("the response list is empty, something wrong");
-            return ResponseEntity.ok()
-                    .body(HTMLTAGS.replace(MESSAGE, BAD_RESPONSE));
+            return ResponseEntity.badRequest().body(BAD_RESPONSE);
         } else {
             String answer = temps.stream().map(String::valueOf).collect(Collectors.joining("\n"));
-            return ResponseEntity.ok().body(HTMLTAGS.replace(MESSAGE, answer));
+            return ResponseEntity.ok().body(buildChart(temps));
         }
     }
 
@@ -66,7 +68,7 @@ public class WeatherController {
             produces = MediaType.TEXT_PLAIN_VALUE
     )
     public ResponseEntity<String> cities() {
-        return ResponseEntity.ok().body(availableCitiesService.getOneStringCitiesNames(" "));
+        return ResponseEntity.ok().body(availableCitiesService.getOneStringCitiesNames(", "));
     }
 
     private String getAppid() {
@@ -84,4 +86,30 @@ public class WeatherController {
         return "";
     }
 
+    private String buildChart(List<Pair<Date, Integer>> temps) {
+        String labels = temps.stream()
+                .map(pair -> "\"" + pair.getKey().toString() + "\"")
+                .collect(Collectors.joining(", "));
+        String data = temps.stream()
+                .map(pair -> pair.getValue().toString())
+                .collect(Collectors.joining(", "));
+        return new StringBuilder()
+                .append("<canvas id=\"chart\"></canvas>")
+                .append("<script>")
+                    .append("var ctx = document.getElementById(\"chart\").getContext('2d');")
+                    .append("var chart = new Chart(ctx, {")
+                        .append("type: \'line\',")
+                        .append("data: {")
+                            .append("labels: [" + labels + "],")
+                            .append("datasets: [{")
+                                .append("label: \"temps per 3 hour\",")
+                                .append("backgroundColor: 'rgba(255, 99, 132, 0.2)',")
+                                .append("borderColor: 'rgb(255, 99, 132)',")
+                                .append("data: [" + data + "],")
+                            .append("}]")
+                        .append("},")
+                    .append("});")
+                .append("</script>")
+                .toString();
+    }
 }

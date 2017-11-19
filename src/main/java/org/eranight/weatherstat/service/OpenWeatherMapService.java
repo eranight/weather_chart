@@ -1,5 +1,6 @@
 package org.eranight.weatherstat.service;
 
+import javafx.util.Pair;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,10 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OpenWeatherMapService {
@@ -29,7 +27,7 @@ public class OpenWeatherMapService {
     private static final String REQUEST =
             "http://api.openweathermap.org/data/2.5/forecast?id=" + CITY_ID + "&units=metric&APPID=" + MY_APPID;
 
-    public List<Integer> getTemps(int cityId, String appId) {
+    public List<Pair<Date, Integer>> getTemps(int cityId, String appId) {
         logger.info(cityId + " " + appId);
         String fullRequest = getFullRequest(String.valueOf(cityId), appId);
         logger.info(fullRequest);
@@ -57,16 +55,17 @@ public class OpenWeatherMapService {
                 .replace(MY_APPID, appId);
     }
 
-    private List<Integer> parseResponse(String response) {
+    private List<Pair<Date, Integer>> parseResponse(String response) {
         logger.info(response);
-        List<Integer> result = new ArrayList<>();
+        List<Pair<Date, Integer>> result = new ArrayList<>();
         try {
             JSONObject mainObject = new JSONObject(response);
             JSONArray tempsArray = mainObject.getJSONArray("list");
             for (int index = 0; index < tempsArray.length(); ++index) {
                 try {
                     float temp = tempsArray.getJSONObject(index).getJSONObject("main").getFloat("temp");
-                    result.add(Math.round(temp));
+                    long unixtime = tempsArray.getJSONObject(index).getLong("dt");
+                    result.add(new Pair<>(new Date(unixtime * 1000), Math.round(temp)));
                 } catch (JSONException e) {
 
                 }

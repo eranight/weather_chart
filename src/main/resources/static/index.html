@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <script>
   var host = "localhost";
   var port = 8080;
@@ -17,7 +17,8 @@
         <button id="submit" onclick="gettemps()" style="font-size:large">Submit</button>
     </div>
     <div id="body">
-        <div id="answer" class="chat form"></div>
+        <div id="answer" class="chart form" style="position: relative; height:40vh; width:80vw">
+        </div>
     </div>
 </body>
 </html>
@@ -30,7 +31,7 @@ function initselect() {
         "url": url + "/weather/cities"
     };
     $.ajax(settings).done(function(response) {
-        var ct = response.split(" ");
+        var ct = response.split(", ");
         var elem = document.getElementById("cities");
         for (i = 0; i < ct.length; i++) {
             var opt = document.createElement("option");
@@ -56,7 +57,7 @@ function gettemps() {
     };
 
     $.ajax(settings).done(function(response) {
-        $( "#answer" ).html(response.replace(/\n/g, "<br />"));
+        $( "#answer" ).html(response);
     }).fail(function(jqXHR, textStatus) {
        alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
        console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
