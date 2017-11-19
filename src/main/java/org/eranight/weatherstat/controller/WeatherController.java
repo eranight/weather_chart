@@ -1,5 +1,6 @@
 package org.eranight.weatherstat.controller;
 
+import org.eranight.weatherstat.service.AvailableCitiesService;
 import org.eranight.weatherstat.service.OpenWeatherMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -32,7 +32,9 @@ public class WeatherController {
     private static final String BAD_RESPONSE = "Oops, something wrong!";
 
     @Autowired
-    OpenWeatherMapService service;
+    OpenWeatherMapService openWeatherMapService;
+    @Autowired
+    AvailableCitiesService availableCitiesService;
 
     @RequestMapping(
             path = "stat",
@@ -45,7 +47,7 @@ public class WeatherController {
     ) {
         logger.info("request: cityId=" + cityId);
 
-        List<String> temps = service.getTemps(cityId, getAppid());
+        List<String> temps = openWeatherMapService.getTemps(cityId, getAppid());
         if (temps.isEmpty()) {
             logger.warn("the response list is empty, something wrong");
             return ResponseEntity.ok()
@@ -54,6 +56,15 @@ public class WeatherController {
             String answer = temps.stream().collect(Collectors.joining("\n"));
             return ResponseEntity.ok().body(HTMLTAGS.replace(MESSAGE, answer));
         }
+    }
+
+    @RequestMapping(
+            path = "cities",
+            method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity<String> cities() {
+        return ResponseEntity.ok().body(availableCitiesService.getOneStringCitiesNames(" "));
     }
 
     private String getAppid() {
