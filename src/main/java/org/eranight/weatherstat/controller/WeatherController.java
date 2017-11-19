@@ -100,7 +100,7 @@ public class WeatherController {
                         .append("data: {")
                             .append("labels: [" + labels + "],")
                             .append("datasets: [{")
-                                .append("label: \"temps per 3 hour\",")
+                                .append("label: \"temperature \u2103\",")
                                 .append("backgroundColor: 'rgba(255, 99, 132, 0.2)',")
                                 .append("borderColor: 'rgb(255, 99, 132)',")
                                 .append("data: [" + data + "],")
