@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Controller
@@ -76,12 +75,11 @@ public class WeatherController {
                 Paths.get(getClass().getClassLoader().getResource("APPID.properties").toURI()))
         ) {
             String parameter = appidReader.readLine();
-            logger.info("parameter=" + parameter);
             return parameter != null ? parameter.replace("APPID=", "") : "";
         } catch (IOException e) {
-            logger.warn("io exception");
+            logger.error("io exception");
         } catch (URISyntaxException e) {
-            logger.warn("uri syntax exception");
+            logger.error("uri syntax exception");
         }
         return "";
     }

@@ -9,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
 
 @Service
@@ -28,9 +26,7 @@ public class OpenWeatherMapService {
             "http://api.openweathermap.org/data/2.5/forecast?id=" + CITY_ID + "&units=metric&APPID=" + MY_APPID;
 
     public List<Pair<Date, Integer>> getTemps(int cityId, String appId) {
-        logger.info(cityId + " " + appId);
         String fullRequest = getFullRequest(String.valueOf(cityId), appId);
-        logger.info(fullRequest);
         Request request = new Request.Builder()
                 .post(RequestBody.create(MediaType.parse(MEDIA_TYPE), ""))
                 .url(fullRequest)
@@ -40,8 +36,6 @@ public class OpenWeatherMapService {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 return parseResponse(response.body().string());
-            } else {
-                logger.info(response.message());
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -56,7 +50,6 @@ public class OpenWeatherMapService {
     }
 
     private List<Pair<Date, Integer>> parseResponse(String response) {
-        logger.info(response);
         List<Pair<Date, Integer>> result = new ArrayList<>();
         try {
             JSONObject mainObject = new JSONObject(response);
@@ -67,11 +60,11 @@ public class OpenWeatherMapService {
                     long unixtime = tempsArray.getJSONObject(index).getLong("dt");
                     result.add(new Pair<>(new Date(unixtime * 1000), Math.round(temp)));
                 } catch (JSONException e) {
-
+                    logger.error(e.getMessage());
                 }
             }
         } catch (JSONException e) {
-
+            logger.error(e.getMessage());
         }
         return result;
     }

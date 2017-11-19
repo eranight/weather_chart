@@ -31,9 +31,9 @@ public class AvailableCitiesService {
                     Paths.get(getClass().getClassLoader().getResource("cities.json").toURI()));
             jsonString = lines.stream().collect(Collectors.joining());
         } catch (IOException e) {
-            logger.warn("IO exception");
+            logger.error("IO exception");
         } catch (URISyntaxException e) {
-            logger.warn("URI Syntax exception");
+            logger.error("URI Syntax exception");
         }
 
         if (!"".equals(jsonString)) {
@@ -45,11 +45,11 @@ public class AvailableCitiesService {
                         JSONObject cityJson = citiesArray.getJSONObject(index);
                         cities.add(new Pair<>(cityJson.getInt("id"), cityJson.getString("name")));
                     } catch (JSONException e) {
-                        logger.warn(e.getMessage());
+                        logger.error(e.getMessage());
                     }
                 }
             } catch (JSONException e) {
-                logger.warn(e.getMessage());
+                logger.error(e.getMessage());
             }
         }
     }

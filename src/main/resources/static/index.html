@@ -13,8 +13,7 @@
 </head>
 <body onload="initselect()">
     <div id="header">
-        <select id="cities" style="font-size:large"></select>
-        <button id="submit" onclick="gettemps()" style="font-size:large">Submit</button>
+        <select id="cities" style="font-size:large" onchange="gettemps()"></select>
     </div>
     <div id="body">
         <div id="answer" class="chart form" style="position: relative; height:40vh; width:80vw">
@@ -38,6 +37,7 @@ function initselect() {
             opt.text = ct[i];
             elem.add(opt);
         }
+        elem.value = elem.options[0];
     }).fail( function(jqXHR, textStatus) {
         alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
         console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
