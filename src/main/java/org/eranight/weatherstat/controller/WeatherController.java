@@ -43,10 +43,12 @@ public class WeatherController {
     )
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<String> stat(
-            @RequestParam("cityId") int cityId
+            @RequestParam("cityName") String cityName
     ) {
-        logger.info("request: cityId=" + cityId);
-
+        int cityId = availableCitiesService.getId(cityName);
+        if (cityId == -1) {
+            return ResponseEntity.badRequest().body(BAD_RESPONSE);
+        }
         List<String> temps = openWeatherMapService.getTemps(cityId, getAppid());
         if (temps.isEmpty()) {
             logger.warn("the response list is empty, something wrong");

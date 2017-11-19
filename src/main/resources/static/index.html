@@ -31,11 +31,11 @@ function initselect() {
     };
     $.ajax(settings).done(function(response) {
         var ct = response.split(" ");
-        var x = document.getElementById("cities");
+        var elem = document.getElementById("cities");
         for (i = 0; i < ct.length; i++) {
             var opt = document.createElement("option");
             opt.text = ct[i];
-            x.add(opt);
+            elem.add(opt);
         }
     }).fail( function(jqXHR, textStatus) {
         alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
@@ -46,18 +46,20 @@ function initselect() {
 
 <script>
 function gettemps() {
-   var settings = {
+    var elem = document.getElementById("cities");
+    var cityName = elem.options[elem.selectedIndex].text;
+    var settings = {
         "method": "POST",
         "crossDomain": true,
         "url": url + "/weather/stat",
-        "data": "cityId=524901"
+        "data": "cityName=" + cityName
     };
 
-   $.ajax(settings).done(function(response) {
+    $.ajax(settings).done(function(response) {
         $( "#answer" ).html(response.replace(/\n/g, "<br />"));
-   }).fail(function(jqXHR, textStatus) {
+    }).fail(function(jqXHR, textStatus) {
        alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
        console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-   });
+    });
 }
 </script>
