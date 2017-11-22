@@ -2,11 +2,9 @@ package org.eranight.weatherstat;
 
 import org.eranight.weatherstat.service.AvailableCitiesService;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 
 @SpringBootApplication
