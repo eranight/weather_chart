@@ -42,7 +42,8 @@ public class OpenWeatherMapService {
         try {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
-                return parseResponse(response.body().string());
+                cacheMap.put(cityId, parseResponse(response.body().string()));
+                return cacheMap.get(cityId);
             }
         } catch (IOException e) {
             logger.error(e.getMessage());

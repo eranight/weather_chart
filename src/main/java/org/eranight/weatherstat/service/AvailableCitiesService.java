@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -23,6 +24,7 @@ public class AvailableCitiesService {
 
     private List<Pair<Integer, String>> cities;
 
+    @PostConstruct
     public void loadCitiesList() {
         cities = new ArrayList<>();
         String jsonString = "";
