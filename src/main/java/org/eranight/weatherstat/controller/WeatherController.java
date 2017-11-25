@@ -1,6 +1,7 @@
 package org.eranight.weatherstat.controller;
 
 import javafx.util.Pair;
+import org.eranight.weatherstat.component.AppIdComponent;
 import org.eranight.weatherstat.service.AvailableCitiesService;
 import org.eranight.weatherstat.service.OpenWeatherMapService;
 import org.slf4j.Logger;
@@ -15,11 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,13 +26,14 @@ public class WeatherController {
     private static Logger logger = LoggerFactory.getLogger(WeatherController.class);
 
     private static final String MESSAGE = "{message}";
-    private static final String HTMLTAGS = "<h2>" + MESSAGE + "</h2>";
     private static final String BAD_RESPONSE = "Oops, something wrong!";
 
     @Autowired
     OpenWeatherMapService openWeatherMapService;
     @Autowired
     AvailableCitiesService availableCitiesService;
+    @Autowired
+    AppIdComponent appIdComponent;
 
     @RequestMapping(
             path = "stat",
@@ -51,7 +48,11 @@ public class WeatherController {
         if (cityId == -1) {
             return ResponseEntity.badRequest().body(BAD_RESPONSE);
         }
-        List<Pair<Date, Integer>> temps = openWeatherMapService.getTemps(cityId, getAppid());
+        if ("{YOUR_APPID}".equals(appIdComponent.getAppId())) {
+            logger.error("You must put your APPID to the APPID.properties file!");
+            return ResponseEntity.badRequest().body(BAD_RESPONSE);
+        }
+        List<Pair<Date, Integer>> temps = openWeatherMapService.getTemps(cityId, appIdComponent.getAppId());
         if (temps.isEmpty()) {
             logger.warn("the response list is empty, something wrong");
             return ResponseEntity.badRequest().body(BAD_RESPONSE);
@@ -68,20 +69,6 @@ public class WeatherController {
     )
     public ResponseEntity<String> cities() {
         return ResponseEntity.ok().body(availableCitiesService.getOneStringCitiesNames(", "));
-    }
-
-    private String getAppid() {
-        try (BufferedReader appidReader = Files.newBufferedReader(
-                Paths.get(getClass().getClassLoader().getResource("APPID.properties").toURI()))
-        ) {
-            String parameter = appidReader.readLine();
-            return parameter != null ? parameter.replace("APPID=", "") : "";
-        } catch (IOException e) {
-            logger.error("io exception");
-        } catch (URISyntaxException e) {
-            logger.error("uri syntax exception");
-        }
-        return "";
     }
 
     private String buildChart(List<Pair<Date, Integer>> temps) {
