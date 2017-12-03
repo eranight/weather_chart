@@ -3,7 +3,7 @@ plugins {
 }
 
 springBoot {
-    mainClass = "ru.atom.chat.ChatApplication"
+    mainClass = "org.eranight.weatherstat.WeatherStatApplication"
 }
 
 ext {
