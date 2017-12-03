@@ -1,12 +1,12 @@
 package org.eranight.weatherstat.controller;
 
 import javafx.util.Pair;
-import org.eranight.weatherstat.component.AppIdComponent;
 import org.eranight.weatherstat.service.AvailableCitiesService;
 import org.eranight.weatherstat.service.OpenWeatherMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +32,8 @@ public class WeatherController {
     OpenWeatherMapService openWeatherMapService;
     @Autowired
     AvailableCitiesService availableCitiesService;
-    @Autowired
-    AppIdComponent appIdComponent;
+    @Value("${APPID}")
+    private String appId;
 
     @RequestMapping(
             path = "stat",
@@ -48,16 +48,17 @@ public class WeatherController {
         if (cityId == -1) {
             return ResponseEntity.badRequest().body(BAD_RESPONSE);
         }
-        if ("{YOUR_APPID}".equals(appIdComponent.getAppId())) {
+        if ("{YOUR_APPID}".equals(appId)) {
             logger.error("You must put your APPID to the APPID.properties file!");
             return ResponseEntity.badRequest().body(BAD_RESPONSE);
         }
-        List<Pair<Date, Integer>> temps = openWeatherMapService.getTemps(cityId, appIdComponent.getAppId());
+        List<Pair<Date, Integer>> temps = openWeatherMapService.getTemps(cityId, appId);
         if (temps.isEmpty()) {
             logger.warn("the response list is empty, something wrong");
             return ResponseEntity.badRequest().body(BAD_RESPONSE);
         } else {
             String answer = temps.stream().map(String::valueOf).collect(Collectors.joining("\n"));
+            logger.debug("good response");
             return ResponseEntity.ok().body(buildChart(temps));
         }
     }
