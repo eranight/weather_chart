@@ -1,6 +1,6 @@
 package org.eranight.weatherstat.service;
 
-import javafx.util.Pair;
+import org.eranight.weatherstat.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,15 +57,15 @@ public class AvailableCitiesService {
     }
 
     public List<String> getCitiesNames() {
-        return cities.stream().map(Pair::getValue).collect(Collectors.toList());
+        return cities.stream().map(Pair::getSecond).collect(Collectors.toList());
     }
 
     public String getOneStringCitiesNames(String delimeter) {
-        return cities.stream().map(Pair::getValue).collect(Collectors.joining(delimeter));
+        return cities.stream().map(Pair::getSecond).collect(Collectors.joining(delimeter));
     }
 
     public int getId(String name) {
         return cities.stream().filter(
-                pair -> pair.getValue().equals(name)).findFirst().orElse(new Pair<>(-1, null)).getKey();
+                pair -> pair.getSecond().equals(name)).findFirst().orElse(new Pair<>(-1, null)).getFirst();
     }
 }
