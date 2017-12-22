@@ -1,8 +1,8 @@
 package org.eranight.weatherstat.controller;
 
-import javafx.util.Pair;
 import org.eranight.weatherstat.service.AvailableCitiesService;
 import org.eranight.weatherstat.service.OpenWeatherMapService;
+import org.eranight.weatherstat.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@CrossOrigin
 @RequestMapping("weather")
 public class WeatherController {
     private static Logger logger = LoggerFactory.getLogger(WeatherController.class);
@@ -74,10 +72,10 @@ public class WeatherController {
 
     private String buildChart(List<Pair<Date, Integer>> temps) {
         String labels = temps.stream()
-                .map(pair -> "\"" + pair.getKey().toString() + "\"")
+                .map(pair -> "\"" + pair.getFirst().toString() + "\"")
                 .collect(Collectors.joining(", "));
         String data = temps.stream()
-                .map(pair -> pair.getValue().toString())
+                .map(pair -> pair.getSecond().toString())
                 .collect(Collectors.joining(", "));
         return new StringBuilder()
                 .append("<canvas id=\"chart\"></canvas>")

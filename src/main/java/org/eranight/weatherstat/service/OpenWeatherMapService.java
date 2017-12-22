@@ -1,7 +1,7 @@
 package org.eranight.weatherstat.service;
 
-import javafx.util.Pair;
 import okhttp3.*;
+import org.eranight.weatherstat.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class OpenWeatherMapService {
 
     private static Logger logger = LoggerFactory.getLogger(OpenWeatherMapService.class);
 
-    private OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient client = new OkHttpClient();
 
     private static final String MEDIA_TYPE = "application/x-www-form-urlencoded";
     private static final String CITY_ID = "{city_id}";
@@ -25,7 +26,7 @@ public class OpenWeatherMapService {
     private static final String REQUEST =
             "http://api.openweathermap.org/data/2.5/forecast?id=" + CITY_ID + "&units=metric&APPID=" + MY_APPID;
 
-    private Map<Integer, List<Pair<Date, Integer>>>  cacheMap = new HashMap<>();
+    private Map<Integer, List<Pair<Date, Integer>>>  cacheMap = new ConcurrentHashMap<>();
 
     public List<Pair<Date, Integer>> getTemps(int cityId, String appId) {
 
