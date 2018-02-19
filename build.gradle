@@ -2,32 +2,28 @@ plugins {
     id 'org.springframework.boot' version '1.5.8.RELEASE'
 }
 
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+group = "eranight"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 springBoot {
     mainClass = "org.eranight.weatherstat.WeatherStatApplication"
 }
 
 ext {
-    jdkVersion = 1.8
-
     junitVersion = "4.12"
     slf4jVersion = "1.7.25"
     okhttpVersion = "3.6.0"
     jsonVersion = "20171018"
-}
-
-allprojects {
-    group = "eranight"
-    version = "1.0-SNAPSHOT"
-
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
-
-    repositories {
-        mavenCentral()
-    }
-
-    sourceCompatibility = jdkVersion
-    targetCompatibility = jdkVersion
 }
 
 ext.libraries = [

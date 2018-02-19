@@ -77,23 +77,26 @@ public class WeatherController {
         String data = temps.stream()
                 .map(pair -> pair.getSecond().toString())
                 .collect(Collectors.joining(", "));
-        return new StringBuilder()
-                .append("<canvas id=\"chart\"></canvas>")
-                .append("<script>")
-                    .append("var ctx = document.getElementById(\"chart\").getContext('2d');")
-                    .append("var chart = new Chart(ctx, {")
-                        .append("type: \'line\',")
-                        .append("data: {")
-                            .append("labels: [" + labels + "],")
-                            .append("datasets: [{")
-                                .append("label: \"temperature \u2103\",")
-                                .append("backgroundColor: 'rgba(255, 99, 132, 0.2)',")
-                                .append("borderColor: 'rgb(255, 99, 132)',")
-                                .append("data: [" + data + "],")
-                            .append("}]")
-                        .append("},")
-                    .append("});")
-                .append("</script>")
-                .toString();
+        return CANVAS_SCRIPT.replace(LABELS_LABEL, labels).replace(DATA_LABEL, data);
     }
+    
+    private static final String LABELS_LABEL = "{LABELS}";
+    private static final String DATA_LABEL = "{DATA}";
+    private static final String CANVAS_SCRIPT =
+    		"<canvas id=\"chart\"></canvas>" +
+    		"<script>" +
+    			"var ctx = document.getElementById(\"chart\").getContext('2d');" +
+    			"var chart = new Chart(ctx, {" +
+    				"type: \'line\'," +
+    				"data: {" +
+    					"labels: [" + LABELS_LABEL + "]," +
+    					"datasets: [{" +
+    						"label: \"temperature \u2103\"," +
+    						"backgroundColor: 'rgba(255, 99, 132, 0.2)'," +
+    						"borderColor: 'rgb(255, 99, 132)'," +
+    						"data: [" + DATA_LABEL + "]," +
+    					"}]" +
+    				"}," +
+    			"});" +
+    		"</script>";
 }
