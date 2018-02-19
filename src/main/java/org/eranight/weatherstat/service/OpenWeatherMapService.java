@@ -26,9 +26,9 @@ public class OpenWeatherMapService {
     private static final String REQUEST =
             "http://api.openweathermap.org/data/2.5/forecast?id=" + CITY_ID + "&units=metric&APPID=" + MY_APPID;
 
-    private Map<Integer, List<Pair<Date, Integer>>>  cacheMap = new ConcurrentHashMap<>();
+    private Map<Integer, List<Pair<Date, Integer>>>  cacheMap = new HashMap<>();
 
-    public List<Pair<Date, Integer>> getTemps(int cityId, String appId) {
+    public synchronized List<Pair<Date, Integer>> getTemps(int cityId, String appId) {
 
         if (cacheMap.containsKey(cityId)) {
             return cacheMap.get(cityId);
