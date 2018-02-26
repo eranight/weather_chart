@@ -30,7 +30,7 @@ public class WeatherController {
     OpenWeatherMapService openWeatherMapService;
     @Autowired
     AvailableCitiesService availableCitiesService;
-    @Value("${APPID}")
+    @Value("${weather_app.APPID}")
     private String appId;
 
     @RequestMapping(
